@@ -1,0 +1,44 @@
+package com.example.monumentos_practica6.ui.navigation
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
+import com.example.monumentos_practica6.ui.launcher.screen.LauncherScreen
+import com.example.monumentos_practica6.ui.monuments.screen.MonumentsScreen
+
+@Composable
+fun AppNavigation(
+    paddingValues: PaddingValues,
+    backStack: NavBackStack<NavKey>
+) {
+    BackHandler(enabled = backStack.size > 1) {
+        backStack.removeLastOrNull()
+    }
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        modifier = Modifier.padding(paddingValues),
+        entryProvider = entryProvider {
+
+            entry<ScreenNav.Launcher> { _ ->
+                LauncherScreen(
+                    onTimeout = {
+                        backStack.clear()
+                        backStack.add(ScreenNav.Monuments)
+                    }
+                )
+            }
+
+            entry<ScreenNav.Monuments> { _ ->
+                MonumentsScreen()
+            }
+        }
+    )
+}
