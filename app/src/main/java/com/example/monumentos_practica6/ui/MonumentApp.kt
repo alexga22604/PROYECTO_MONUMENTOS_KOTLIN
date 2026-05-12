@@ -14,12 +14,14 @@ fun MonumentApp() {
 
     AppScaffold(
         showNavigationElements = showScaffoldComponents,
-        onNavigate = { route ->
-            when (route) {
-                "monuments" -> {
+        onNavigate = { screen ->
+            when (screen) {
+                ScreenNav.Monuments -> {
                     backStack.clear()
                     backStack.add(ScreenNav.Monuments)
                 }
+
+                else -> {}
             }
         }
     ) { innerPadding ->
