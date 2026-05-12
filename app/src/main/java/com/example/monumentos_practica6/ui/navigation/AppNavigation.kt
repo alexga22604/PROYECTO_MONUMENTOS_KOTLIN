@@ -26,7 +26,6 @@ fun AppNavigation(
         onBack = { backStack.removeLastOrNull() },
         modifier = Modifier.padding(paddingValues),
         entryProvider = entryProvider {
-
             entry<ScreenNav.Launcher> { _ ->
                 LauncherScreen(
                     onTimeout = {

@@ -4,7 +4,7 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ScreenNav: NavKey {
+sealed class ScreenNav : NavKey {
     @Serializable
     data object Launcher : ScreenNav()
 
