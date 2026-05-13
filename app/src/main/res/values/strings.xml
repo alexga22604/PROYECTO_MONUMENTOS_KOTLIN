@@ -2,4 +2,23 @@
     <string name="app_name">Monumentos-practica6</string>
     <string name="monument_txt">Monument App</string>
     <string name="app_logo">App Logo</string>
+    <string name="monuments_title">Monuments</string>
+    <string name="map_view_description">Map View</string>
+    <string name="sort_description">Sort</string>
+    <string name="menu_description">Open Menu</string>
+    <string name="sort_by_title">Sort by</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_city">City</string>
+    <string name="close_button">Close</string>
+    <string name="city_location_format">%1$s - %2$s</string>
+    <string name="drawer_subtitle">Powered by SDOS</string>
+    <string name="favorites_title">Favorites</string>
+    <string name="my_monuments_title">My Monuments</string>
+    <string name="sort_north_south">North to South</string>
+    <string name="sort_east_west">East to West</string>
+    <string name="filter_description">Filter</string>
+    <string name="filter_by_country_title">Filter by Country</string>
+    <string name="all_countries">All Countries</string>
+    <string name="favorite_toggle_description">Toggle Favorite</string>
+    <string name="sort_date">Date</string>
 </resources>

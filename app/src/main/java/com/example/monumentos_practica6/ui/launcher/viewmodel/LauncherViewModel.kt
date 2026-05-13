@@ -15,12 +15,12 @@ private const val LOADING_DELAY = 1500L
 
 class LauncherViewModel : ViewModel() {
     private val _navigateToMonuments = MutableSharedFlow<Unit>()
-    val navigateToMonuments: SharedFlow<Unit> = _navigateToMonuments.asSharedFlow()
     private val _isLoading = MutableStateFlow(false)
+
+    val navigateToMonuments: SharedFlow<Unit> = _navigateToMonuments.asSharedFlow()
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     fun onImageClicked() {
         if (_isLoading.value) return
-
         viewModelScope.launch {
             _isLoading.value = true
             delay(LOADING_DELAY)
