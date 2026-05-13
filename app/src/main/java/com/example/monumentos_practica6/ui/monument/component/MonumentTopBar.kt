@@ -1,9 +1,9 @@
 package com.example.monumentos_practica6.ui.monument.component
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,13 +42,13 @@ fun MonumentTopBar(
         actions = {
             IconButton(onClick = onSortClick) {
                 Icon(
-                    imageVector = Icons.Default.Sort,
+                    imageVector = Icons.Default.SwapVert,
                     contentDescription = stringResource(id = R.string.sort_description)
                 )
             }
             IconButton(onClick = onFilterClick) {
                 Icon(
-                    imageVector = Icons.Default.FilterList,
+                    imageVector = Icons.Default.Public,
                     contentDescription = stringResource(id = R.string.filter_description)
                 )
             }

@@ -1,12 +1,11 @@
 package com.example.monumentos_practica6.ui.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -25,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.example.monumentos_practica6.R
 import com.example.monumentos_practica6.ui.navigation.ScreenNav
 import com.example.monumentos_practica6.ui.theme.DrawerBackground
-import com.example.monumentos_practica6.ui.theme.DrawerSelectedBackground
+import com.example.monumentos_practica6.ui.theme.DrawerHeaderBackground
 import kotlinx.coroutines.launch
 
 @Composable
@@ -52,9 +51,19 @@ fun AppScaffold(
                     drawerContainerColor = DrawerBackground,
                     drawerContentColor = Color.White
                 ) {
-                    Column(modifier = Modifier.padding(24.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(DrawerHeaderBackground)
+                            .padding(
+                                start = 34.dp,
+                                top = 54.dp,
+                                end = 24.dp,
+                                bottom = 74.dp
+                            )
+                    ) {
                         Text(
-                            text = stringResource(id = R.string.app_name),
+                            text = stringResource(id = R.string.monumens_app_modal),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -66,8 +75,6 @@ fun AppScaffold(
                         )
                     }
 
-                    HorizontalDivider(color = Color.Gray)
-                    Spacer(modifier = Modifier.height(16.dp))
 
                     DrawerItem(
                         label = stringResource(id = R.string.monuments_title),
@@ -106,13 +113,15 @@ fun AppScaffold(
 
 @Composable
 private fun DrawerItem(label: String, selected: Boolean, onClick: () -> Unit) {
+    val textColor = if (selected) Color.White else Color.LightGray
+
     NavigationDrawerItem(
-        label = { Text(text = label, color = Color.White) },
+        label = { Text(text = label, color = textColor) },
         selected = selected,
         onClick = onClick,
         colors = NavigationDrawerItemDefaults.colors(
             unselectedContainerColor = Color.Transparent,
-            selectedContainerColor = DrawerSelectedBackground
+            selectedContainerColor = Color.Transparent
         ),
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
     )

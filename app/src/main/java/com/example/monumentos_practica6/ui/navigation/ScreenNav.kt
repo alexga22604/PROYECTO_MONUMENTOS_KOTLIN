@@ -12,6 +12,8 @@ sealed class ScreenNav : NavKey {
     data object Monuments : ScreenNav()
 
     @Serializable
+    data object Map : ScreenNav()
+    @Serializable
     data object Favorites : ScreenNav()
 
     @Serializable

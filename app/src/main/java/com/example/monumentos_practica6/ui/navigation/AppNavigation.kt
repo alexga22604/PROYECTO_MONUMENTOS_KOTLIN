@@ -48,6 +48,8 @@ fun AppNavigation(
                 )
             }
 
+            entry<ScreenNav.Map> { _ ->
+            }
             entry<ScreenNav.Favorites> { _ ->
             }
 
