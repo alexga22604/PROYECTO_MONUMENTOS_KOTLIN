@@ -13,6 +13,7 @@ sealed class ScreenNav : NavKey {
 
     @Serializable
     data object Map : ScreenNav()
+
     @Serializable
     data object Favorites : ScreenNav()
 
