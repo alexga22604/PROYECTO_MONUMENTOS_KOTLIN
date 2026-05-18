@@ -27,4 +27,16 @@
     <string name="icon_east_west_description">East to West Icon</string>
     <string name="icon_country_description">Country Icon</string>
     <string name="monumens_app_modal">Monuments App</string>
+    <string name="action_back">Back</string>
+    <string name="action_open_map">Open in Google Maps</string>
+    <string name="action_share">Share</string>
+    <string name="info_description">More Info</string>
+    <string name="previous_image">Previous Image</string>
+    <string name="next_image">Next Image</string>
+    <string name="email_subject_format">[Aprueba Historia] %1$s</string>
+    <string name="email_body_format">Sabías que el monumento %1$s se encuentra en la %2$s del %3$s. Conócela un poco más aquí: %4$s</string>
+    <string name="static_map_description">Static Map Location</string>
+    <string name="mailto_scheme">mailto:</string>
+    <string name="geo_uri_format">geo:%1$s,%2$s?q=%1$s,%2$s(%3$s)</string>
+    <string name="static_map_url_format">https://static-maps.yandex.ru/1.x/?ll=%1$s,%2$s&amp;size=450,250&amp;z=15&amp;l=map&amp;pt=%1$s,%2$s,pm2rdm</string>
 </resources>

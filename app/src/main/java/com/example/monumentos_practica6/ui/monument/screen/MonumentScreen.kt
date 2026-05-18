@@ -74,7 +74,8 @@ fun MonumentScreen(
             items(state.filteredMonuments) { monument ->
                 MonumentItem(
                     monument = monument,
-                    onClick = { onNavigateToDetail(monument.id) }
+                    onClick = { onNavigateToDetail(monument.id) },
+                    onFavoriteClick = { viewModel.toggleFavorite(monument.id) }
                 )
             }
         }
