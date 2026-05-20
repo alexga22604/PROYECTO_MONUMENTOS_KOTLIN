@@ -18,6 +18,7 @@ import com.example.monumentos_practica6.ui.monument.viewmodel.MonumentViewModel
 import com.example.monumentos_practica6.ui.monument_detail.screen.MonumentDetailScreen
 import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModel
 import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModelFactory
+import com.example.monumentos_practica6.ui.monument_map.screen.MonumentMapScreen
 
 @Composable
 fun AppNavigation(
@@ -39,6 +40,7 @@ fun AppNavigation(
                 LauncherScreen(
                     onTimeout = {
                         backStack.clear()
+
                         backStack.add(ScreenNav.Monuments)
                     }
                 )
@@ -73,6 +75,24 @@ fun AppNavigation(
             }
 
             entry<ScreenNav.Map> { _ ->
+                MonumentMapScreen(
+                    viewModel = viewModel,
+                    paddingValues = PaddingValues(),
+                    onMenuClick = onOpenDrawer,
+                    onNavigateToList = {
+                        backStack.removeLastOrNull()
+                    },
+                    onNavigateToDetail = { id ->
+                        backStack.add(ScreenNav.MonumentDetail(id))
+                    },
+                    onNavigateToAdd = { lat, lng ->
+                        backStack.add(ScreenNav.MonumentAdd(lat, lng))
+                    }
+                )
+            }
+
+            entry<ScreenNav.MonumentAdd> { screen ->
+                //TODO MonumentAddScreen
             }
 
             entry<ScreenNav.Favorites> { _ ->
