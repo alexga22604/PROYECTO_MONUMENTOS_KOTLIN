@@ -46,7 +46,7 @@ import com.example.monumentos_practica6.ui.theme.InfoIconColor
 import com.example.monumentos_practica6.ui.theme.TextPrimaryDark
 import com.example.monumentos_practica6.ui.theme.TextSecondaryDark
 
-private const val DEFAULT_STRING = ""
+private const val EMPTY_STRING = ""
 
 @Composable
 fun MonumentDetailScreen(
@@ -59,7 +59,7 @@ fun MonumentDetailScreen(
     val showTopBarTitle by remember { derivedStateOf { listState.firstVisibleItemIndex > 0 } }
     val monument = state.monument
     val shareSubject = monument?.let { stringResource(id = R.string.email_subject_format, it.name) }
-        ?: DEFAULT_STRING
+        ?: EMPTY_STRING
     val shareBody = monument?.let {
         stringResource(
             id = R.string.email_body_format,
@@ -68,7 +68,7 @@ fun MonumentDetailScreen(
             it.country,
             it.wikiUrl
         )
-    } ?: DEFAULT_STRING
+    } ?: EMPTY_STRING
     val mailtoScheme = stringResource(id = R.string.mailto_scheme)
     val geoUriString = monument?.let {
         stringResource(
@@ -82,7 +82,7 @@ fun MonumentDetailScreen(
     Scaffold(
         topBar = {
             MonumentDetailTopBar(
-                title = monument?.name ?: DEFAULT_STRING,
+                title = monument?.name ?: EMPTY_STRING,
                 showTitle = showTopBarTitle,
                 onBackClick = onBack,
                 onMapClick = {

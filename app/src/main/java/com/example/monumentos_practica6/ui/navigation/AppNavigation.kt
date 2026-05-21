@@ -15,10 +15,14 @@ import com.example.monumentos_practica6.data.repository.MonumentRepository
 import com.example.monumentos_practica6.ui.launcher.screen.LauncherScreen
 import com.example.monumentos_practica6.ui.monument.screen.MonumentScreen
 import com.example.monumentos_practica6.ui.monument.viewmodel.MonumentViewModel
+import com.example.monumentos_practica6.ui.monument_add.screen.MonumentAddScreen
+import com.example.monumentos_practica6.ui.monument_add.viewmodel.MonumentAddViewModel
 import com.example.monumentos_practica6.ui.monument_detail.screen.MonumentDetailScreen
 import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModel
 import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModelFactory
 import com.example.monumentos_practica6.ui.monument_map.screen.MonumentMapScreen
+
+private const val EMPTY_STRING = ""
 
 @Composable
 fun AppNavigation(
@@ -40,7 +44,6 @@ fun AppNavigation(
                 LauncherScreen(
                     onTimeout = {
                         backStack.clear()
-
                         backStack.add(ScreenNav.Monuments)
                     }
                 )
@@ -92,7 +95,27 @@ fun AppNavigation(
             }
 
             entry<ScreenNav.MonumentAdd> { screen ->
-                //TODO MonumentAddScreen
+                val addViewModel: MonumentAddViewModel = viewModel()
+
+                MonumentAddScreen(
+                    latitude = screen.latitude,
+                    longitude = screen.longitude,
+                    viewModel = addViewModel,
+                    paddingValues = PaddingValues(),
+                    onMonumentSaved = { name, description, country, city, lat, lng, images ->
+                        viewModel.addCustomMonument(
+                            name = name,
+                            description = description,
+                            country = country,
+                            city = city,
+                            location = EMPTY_STRING,
+                            latitude = lat,
+                            longitude = lng,
+                            images = images
+                        )
+                        backStack.removeLastOrNull()
+                    }
+                )
             }
 
             entry<ScreenNav.Favorites> { _ ->

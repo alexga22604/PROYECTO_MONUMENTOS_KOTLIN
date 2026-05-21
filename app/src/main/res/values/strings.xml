@@ -44,4 +44,17 @@
     <string name="search_detail_description">Search Detail</string>
     <string name="add_monument_title">Add Monument</string>
     <string name="coordinates_format">Lat: %1$s, Lng: %2$s</string>
+    <string name="monument_name_label">Name</string>
+    <string name="monument_description_label">Description</string>
+    <string name="monument_city_label">City</string>
+    <string name="monument_location_label">Location</string>
+    <string name="monument_images_label">Images</string>
+    <string name="monument_country_label">Country</string>
+    <string name="monument_address_label">Address</string>
+    <string name="save">SAVE</string>
+    <string name="monument_added_successfully">Monument added successfully</string>
+    <string name="image_source_title">Select Image</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="cancel">Cancel</string>
 </resources>

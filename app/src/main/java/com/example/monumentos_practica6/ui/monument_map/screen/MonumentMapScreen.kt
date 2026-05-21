@@ -78,7 +78,7 @@ fun MonumentMapScreen(
     val context = LocalContext.current
 
     LaunchedEffect(isMapLoaded, state.monuments) {
-        if (isMapLoaded && state.monuments.isNotEmpty()) {
+        if (isMapLoaded && state.monuments.isNotEmpty() && state.newlyAddedMonumentId == null) {
             val builder = LatLngBounds.builder()
             state.monuments.forEach { builder.include(LatLng(it.latitude, it.longitude)) }
             cameraPositionState.animate(
@@ -87,6 +87,24 @@ fun MonumentMapScreen(
                     DEFAULT_ZOOM_PADDING
                 )
             )
+        }
+    }
+
+    LaunchedEffect(isMapLoaded, state.newlyAddedMonumentId) {
+        if (isMapLoaded && state.newlyAddedMonumentId != null) {
+            val newMonument = state.monuments.find { it.id == state.newlyAddedMonumentId }
+            if (newMonument != null) {
+                selectedMonument = newMonument.id
+                coroutineScope.launch {
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(newMonument.latitude, newMonument.longitude),
+                            MY_LOCATION_ZOOM
+                        )
+                    )
+                }
+                viewModel.clearNewlyAddedMonument()
+            }
         }
     }
 
