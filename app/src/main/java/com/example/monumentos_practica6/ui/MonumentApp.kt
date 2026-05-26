@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.rememberNavBackStack
-import com.example.monumentos_practica6.data.local.MyMonumentsPreferences
+import com.example.monumentos_practica6.data.local.MyMonumentPreferences
 import com.example.monumentos_practica6.data.repository.MonumentRepository
 import com.example.monumentos_practica6.ui.common.AppScaffold
 import com.example.monumentos_practica6.ui.monument.viewmodel.MonumentViewModel
@@ -17,7 +17,7 @@ import com.example.monumentos_practica6.ui.navigation.ScreenNav
 fun MonumentApp() {
     val context = LocalContext.current
     val repository = remember { MonumentRepository() }
-    val preferences = remember { MyMonumentsPreferences(context) }
+    val preferences = remember { MyMonumentPreferences(context) }
     val factory = remember { MonumentViewModelFactory(repository, preferences) }
     val viewModel: MonumentViewModel = viewModel(factory = factory)
 
