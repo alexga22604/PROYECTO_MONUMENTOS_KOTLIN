@@ -33,11 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.monumentos_practica6.R
 import com.example.monumentos_practica6.ui.monument.viewmodel.MonumentViewModel
 import com.example.monumentos_practica6.ui.monument_map.component.MonumentMapTopBar
 import com.example.monumentos_practica6.ui.theme.MapFabDarkBlue
@@ -47,9 +45,7 @@ import com.example.monumentos_practica6.ui.theme.MapInfoWindowContent
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
@@ -71,16 +67,17 @@ fun MonumentMapScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val cameraPositionState = rememberCameraPositionState()
+    val coroutineScope = rememberCoroutineScope()
     var isMapLoaded by remember { mutableStateOf(false) }
     var selectedMonument by remember { mutableStateOf<Int?>(null) }
     var isCenteredOnMe by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
 
-    LaunchedEffect(isMapLoaded, state.monuments) {
-        if (isMapLoaded && state.monuments.isNotEmpty() && state.newlyAddedMonumentId == null) {
+    val allMapMonuments = state.monuments + state.myMonuments
+
+    LaunchedEffect(isMapLoaded, allMapMonuments) {
+        if (isMapLoaded && allMapMonuments.isNotEmpty() && state.newlyAddedMonumentId == null) {
             val builder = LatLngBounds.builder()
-            state.monuments.forEach { builder.include(LatLng(it.latitude, it.longitude)) }
+            allMapMonuments.forEach { builder.include(LatLng(it.latitude, it.longitude)) }
             cameraPositionState.animate(
                 CameraUpdateFactory.newLatLngBounds(
                     builder.build(),
@@ -92,17 +89,15 @@ fun MonumentMapScreen(
 
     LaunchedEffect(isMapLoaded, state.newlyAddedMonumentId) {
         if (isMapLoaded && state.newlyAddedMonumentId != null) {
-            val newMonument = state.monuments.find { it.id == state.newlyAddedMonumentId }
+            val newMonument = allMapMonuments.find { it.id == state.newlyAddedMonumentId }
             if (newMonument != null) {
                 selectedMonument = newMonument.id
-                coroutineScope.launch {
-                    cameraPositionState.animate(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(newMonument.latitude, newMonument.longitude),
-                            MY_LOCATION_ZOOM
-                        )
+                cameraPositionState.animate(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(newMonument.latitude, newMonument.longitude),
+                        MY_LOCATION_ZOOM
                     )
-                }
+                )
                 viewModel.clearNewlyAddedMonument()
             }
         }
@@ -117,18 +112,13 @@ fun MonumentMapScreen(
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 FloatingActionButton(
                     onClick = {
-                        if (isCenteredOnMe) {
-                            if (state.monuments.isNotEmpty()) {
-                                val builder = LatLngBounds.builder()
-                                state.monuments.forEach {
-                                    builder.include(
-                                        LatLng(
-                                            it.latitude,
-                                            it.longitude
-                                        )
-                                    )
-                                }
-                                coroutineScope.launch {
+                        coroutineScope.launch {
+                            if (isCenteredOnMe) {
+                                if (allMapMonuments.isNotEmpty()) {
+                                    val builder = LatLngBounds.builder()
+                                    allMapMonuments.forEach {
+                                        builder.include(LatLng(it.latitude, it.longitude))
+                                    }
                                     cameraPositionState.animate(
                                         CameraUpdateFactory.newLatLngBounds(
                                             builder.build(),
@@ -136,20 +126,16 @@ fun MonumentMapScreen(
                                         )
                                     )
                                 }
-                            }
-                            isCenteredOnMe = false
-                        } else {
-                            coroutineScope.launch {
+                                isCenteredOnMe = false
+                            } else {
                                 cameraPositionState.animate(
                                     CameraUpdateFactory.newLatLngZoom(
-                                        LatLng(
-                                            MY_LOCATION_LAT,
-                                            MY_LOCATION_LNG
-                                        ), MY_LOCATION_ZOOM
+                                        LatLng(MY_LOCATION_LAT, MY_LOCATION_LNG),
+                                        MY_LOCATION_ZOOM
                                     )
                                 )
+                                isCenteredOnMe = true
                             }
-                            isCenteredOnMe = true
                         }
                     },
                     containerColor = MapFabWhite
@@ -174,17 +160,11 @@ fun MonumentMapScreen(
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                properties = MapProperties(
-                    mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
-                        context,
-                        R.raw.map_style_light
-                    )
-                ),
                 onMapLoaded = { isMapLoaded = true },
                 onMapClick = { selectedMonument = null },
                 onMapLongClick = { latLng -> onNavigateToAdd(latLng.latitude, latLng.longitude) }
             ) {
-                state.monuments.forEach { monument ->
+                allMapMonuments.forEach { monument ->
                     val markerState = rememberMarkerState(
                         key = monument.id.toString(),
                         position = LatLng(monument.latitude, monument.longitude)
@@ -201,9 +181,7 @@ fun MonumentMapScreen(
                                 selectedMonument = monument.id
                                 coroutineScope.launch {
                                     cameraPositionState.animate(
-                                        CameraUpdateFactory.newLatLng(
-                                            markerState.position
-                                        )
+                                        CameraUpdateFactory.newLatLng(markerState.position)
                                     )
                                 }
                             }

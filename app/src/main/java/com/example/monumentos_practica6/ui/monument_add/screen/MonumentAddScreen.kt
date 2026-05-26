@@ -70,6 +70,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
@@ -77,6 +78,9 @@ import java.io.File
 
 private const val MAP_HEIGHT = 200
 private const val MAP_ZOOM = 15f
+private const val DEFAULT_ZOOM = 15f
+private const val DEFAULT_LAT = 40.4168
+private const val DEFAULT_LNG = -3.7038
 private const val IMAGE_BOX_SIZE = 100
 private const val CHAR_LIMIT = 250
 private const val EMPTY_STRING = ""
@@ -99,15 +103,20 @@ fun MonumentAddScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     var showImageDialog by remember { mutableStateOf(false) }
+
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
-        onResult = { uris -> viewModel.addImages(uris) }
+        onResult = { uris ->
+            val permanentUris = uris.mapNotNull { copyUriToInternalStorage(context, it) }
+            viewModel.addImages(permanentUris)
+        }
     )
+
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview(),
         onResult = { bitmap ->
             bitmap?.let {
-                val uri = saveBitmapToTempFile(context, it)
+                val uri = saveBitmapToInternalStorage(context, it)
                 viewModel.addImages(listOf(uri))
             }
         }
@@ -131,11 +140,13 @@ fun MonumentAddScreen(
             )
         }
     }
+
     val isFormValid = state.name.isNotBlank() &&
             state.description.isNotBlank() &&
             state.country.isNotBlank() &&
             state.city.isNotBlank() &&
-            state.images.isNotEmpty()
+            state.images.isNotEmpty() &&
+            (state.latitude != 0.0 && state.longitude != 0.0)
 
     if (showImageDialog) {
         AlertDialog(
@@ -236,57 +247,38 @@ fun MonumentAddScreen(
                     fontSize = 14.sp
                 )
 
-                if (state.latitude != 0.0 && state.longitude != 0.0) {
-                    val cameraPositionState = rememberCameraPositionState {
-                        position = CameraPosition.fromLatLngZoom(
-                            LatLng(state.latitude, state.longitude),
-                            MAP_ZOOM
-                        )
-                    }
+                val initialLat = if (state.latitude != 0.0) state.latitude else DEFAULT_LAT
+                val initialLng = if (state.longitude != 0.0) state.longitude else DEFAULT_LNG
+                val initialZoom = if (state.latitude != 0.0) MAP_ZOOM else DEFAULT_ZOOM
 
-                    LaunchedEffect(state.latitude, state.longitude) {
-                        cameraPositionState.animate(
-                            CameraUpdateFactory.newLatLng(
-                                LatLng(
-                                    state.latitude,
-                                    state.longitude
-                                )
-                            )
-                        )
-                    }
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(LatLng(initialLat, initialLng), initialZoom)
+                }
 
-                    GoogleMap(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(MAP_HEIGHT.dp),
-                        cameraPositionState = cameraPositionState,
-                        properties = MapProperties(
-                            mapStyleOptions = MapStyleOptions.loadRawResourceStyle(
-                                context,
-                                R.raw.map_style_light
-                            )
-                        ),
-                        onMapLongClick = { latLng ->
-                            viewModel.updateLocation(
-                                latLng.latitude,
-                                latLng.longitude
-                            )
-                        }
-                    ) {
+                LaunchedEffect(state.latitude, state.longitude) {
+                    if (state.latitude != 0.0 && state.longitude != 0.0) {
+                        cameraPositionState.animate(CameraUpdateFactory.newLatLng(LatLng(state.latitude, state.longitude)))
+                    }
+                }
+
+                GoogleMap(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(MAP_HEIGHT.dp),
+                    cameraPositionState = cameraPositionState,
+                    properties = MapProperties(mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_light)),
+                    uiSettings = MapUiSettings(zoomControlsEnabled = false, compassEnabled = false),
+                    onMapLongClick = { latLng -> viewModel.updateLocation(latLng.latitude, latLng.longitude) }
+                ) {
+                    if (state.latitude != 0.0 && state.longitude != 0.0) {
                         MarkerComposable(
-                            state = rememberMarkerState(
-                                position = LatLng(
-                                    state.latitude,
-                                    state.longitude
-                                )
-                            )
+                            state = rememberMarkerState(position = LatLng(state.latitude, state.longitude))
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Navigation,
                                 contentDescription = EMPTY_STRING,
                                 tint = MapMarkerOrange,
-                                modifier = Modifier
-                                    .size(36.dp)
+                                modifier = Modifier.size(36.dp)
                             )
                         }
                     }
@@ -323,10 +315,7 @@ fun MonumentAddScreen(
                                 modifier = Modifier
                                     .align(Alignment.BottomEnd)
                                     .padding(4.dp)
-                                    .background(
-                                        Color.Black.copy(alpha = DELETE_ICON_ALPHA),
-                                        RoundedCornerShape(4.dp)
-                                    )
+                                    .background(Color.Black.copy(alpha = DELETE_ICON_ALPHA), RoundedCornerShape(4.dp))
                                     .padding(4.dp)
                             ) {
                                 Icon(
@@ -413,12 +402,25 @@ private fun FormTextField(
     }
 }
 
-private fun saveBitmapToTempFile(context: Context, bitmap: Bitmap): Uri {
-    val file =
-        File(context.cacheDir, "$TEMP_IMAGE_PREFIX${System.currentTimeMillis()}$TEMP_IMAGE_SUFFIX")
+private fun saveBitmapToInternalStorage(context: Context, bitmap: Bitmap): Uri {
+    val file = File(context.filesDir, "$TEMP_IMAGE_PREFIX${System.currentTimeMillis()}$TEMP_IMAGE_SUFFIX")
     file.outputStream().use { out ->
         bitmap.compress(Bitmap.CompressFormat.JPEG, BITMAP_QUALITY, out)
         out.flush()
     }
     return Uri.fromFile(file)
+}
+
+private fun copyUriToInternalStorage(context: Context, uri: Uri): Uri? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.filesDir, "$TEMP_IMAGE_PREFIX${System.currentTimeMillis()}$TEMP_IMAGE_SUFFIX")
+        file.outputStream().use { outputStream ->
+            inputStream.copyTo(outputStream)
+        }
+        Uri.fromFile(file)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
 }

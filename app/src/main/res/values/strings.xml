@@ -57,4 +57,10 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="cancel">Cancel</string>
+    <string name="my_monuments">My Monuments</string>
+    <string name="without_own_monuments">Without own monuments</string>
+    <string name="do_not_be_afraid">Do not be afraid, press the add button</string>
+    <string name="delete_monument_title">Delete Monument</string>
+    <string name="delete_monument_message">Are you sure you want to delete this monument?</string>
+    <string name="delete">Delete</string>
 </resources>

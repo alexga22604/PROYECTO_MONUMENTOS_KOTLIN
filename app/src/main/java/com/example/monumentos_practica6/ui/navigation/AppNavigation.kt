@@ -21,7 +21,10 @@ import com.example.monumentos_practica6.ui.monument_detail.screen.MonumentDetail
 import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModel
 import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModelFactory
 import com.example.monumentos_practica6.ui.monument_map.screen.MonumentMapScreen
-
+import com.example.monumentos_practica6.ui.my_monument.screen.MonumentDetailCustomScreen
+import com.example.monumentos_practica6.ui.my_monument.screen.MyMonumentScreen
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 private const val EMPTY_STRING = ""
 
 @Composable
@@ -64,17 +67,31 @@ fun AppNavigation(
             }
 
             entry<ScreenNav.MonumentDetail> { screen ->
-                val repository = remember { MonumentRepository() }
-                val factory = remember { MonumentDetailViewModelFactory(repository, screen.id) }
-                val detailViewModel: MonumentDetailViewModel = viewModel(
-                    key = screen.id.toString(),
-                    factory = factory
-                )
+                val state by viewModel.uiState.collectAsState()
+                val customMonument = state.myMonuments.find { it.id == screen.id }
 
-                MonumentDetailScreen(
-                    viewModel = detailViewModel,
-                    onBack = { backStack.removeLastOrNull() }
-                )
+                if (customMonument != null) {
+                    MonumentDetailCustomScreen(
+                        monument = customMonument,
+                        onBack = { backStack.removeLastOrNull() },
+                        onDelete = {
+                            viewModel.deleteCustomMonument(screen.id)
+                            backStack.removeLastOrNull()
+                        }
+                    )
+                } else {
+                    val repository = remember { MonumentRepository() }
+                    val factory = remember { MonumentDetailViewModelFactory(repository, screen.id) }
+                    val detailViewModel: MonumentDetailViewModel = viewModel(
+                        key = screen.id.toString(),
+                        factory = factory
+                    )
+
+                    MonumentDetailScreen(
+                        viewModel = detailViewModel,
+                        onBack = { backStack.removeLastOrNull() }
+                    )
+                }
             }
 
             entry<ScreenNav.Map> { _ ->
@@ -122,6 +139,17 @@ fun AppNavigation(
             }
 
             entry<ScreenNav.MyMonuments> { _ ->
+                MyMonumentScreen(
+                    viewModel = viewModel,
+                    paddingValues = PaddingValues(),
+                    onMenuClick = onOpenDrawer,
+                    onNavigateToAdd = { lat, lng ->
+                        backStack.add(ScreenNav.MonumentAdd(lat, lng))
+                    },
+                    onNavigateToDetail = { id ->
+                        backStack.add(ScreenNav.MonumentDetail(id))
+                    }
+                )
             }
         }
     )
