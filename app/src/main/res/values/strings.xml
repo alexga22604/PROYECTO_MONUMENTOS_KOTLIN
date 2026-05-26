@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Monumentos-practica6</string>
+    <string name="monument_txt">Monument App</string>
+    <string name="app_logo">App Logo</string>
 </resources>
