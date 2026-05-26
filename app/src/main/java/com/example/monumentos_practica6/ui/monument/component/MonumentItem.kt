@@ -17,10 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -41,10 +37,9 @@ import com.example.monumentos_practica6.ui.theme.TextSecondaryDark
 @Composable
 fun MonumentItem(
     monument: MonumentBo,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onFavoriteClick: () -> Unit
 ) {
-    var isFavorite by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,14 +49,16 @@ fun MonumentItem(
         shape = RectangleShape
     ) {
         Column {
-            AsyncImage(
-                model = monument.imageUrl,
-                contentDescription = monument.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop
-            )
+            if (monument.images.isNotEmpty()) {
+                AsyncImage(
+                    model = monument.images.first(),
+                    contentDescription = monument.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
             Row(
                 modifier = Modifier
@@ -89,12 +86,12 @@ fun MonumentItem(
                 }
 
                 IconButton(
-                    onClick = { isFavorite = !isFavorite }
+                    onClick = onFavoriteClick
                 ) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
+                        imageVector = if (monument.isFavorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
                         contentDescription = stringResource(id = R.string.favorite_toggle_description),
-                        tint = if (isFavorite) FavoriteStarActive else FavoriteStarInactive,
+                        tint = if (monument.isFavorite) FavoriteStarActive else FavoriteStarInactive,
                         modifier = Modifier.size(36.dp)
                     )
                 }
