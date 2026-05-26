@@ -6,9 +6,11 @@ data class MonumentBo(
     val description: String,
     val city: String,
     val location: String,
-    val imageUrl: String,
+    val images: List<String>,
     val country: String,
     val creationDate: Long,
     val latitude: Double,
-    val longitude: Double
+    val longitude: Double,
+    val wikiUrl: String,
+    val isFavorite: Boolean = false
 )

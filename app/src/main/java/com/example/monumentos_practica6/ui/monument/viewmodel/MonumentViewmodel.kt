@@ -17,6 +17,24 @@ class MonumentViewModel(private val repository: MonumentRepository) : ViewModel(
         fetchMonuments()
     }
 
+    private fun applyFiltersAndSort() {
+        val currentState = _uiState.value
+        var currentList = currentState.monuments
+
+        if (currentState.selectedCountry != null) {
+            currentList = currentList.filter { it.country == currentState.selectedCountry }
+        }
+
+        currentList = when (currentState.sortType) {
+            SortType.DATE -> currentList.sortedBy { it.creationDate }
+            SortType.NAME -> currentList.sortedBy { it.name }
+            SortType.NORTH_SOUTH -> currentList.sortedByDescending { it.latitude }
+            SortType.EAST_WEST -> currentList.sortedByDescending { it.longitude }
+        }
+
+        _uiState.update { it.copy(filteredMonuments = currentList) }
+    }
+
     private fun fetchMonuments() {
         viewModelScope.launch {
             repository.getMonuments().collect { monumentList ->
@@ -43,21 +61,7 @@ class MonumentViewModel(private val repository: MonumentRepository) : ViewModel(
         applyFiltersAndSort()
     }
 
-    private fun applyFiltersAndSort() {
-        val currentState = _uiState.value
-        var currentList = currentState.monuments
-
-        if (currentState.selectedCountry != null) {
-            currentList = currentList.filter { it.country == currentState.selectedCountry }
-        }
-
-        currentList = when (currentState.sortType) {
-            SortType.DATE -> currentList.sortedBy { it.creationDate }
-            SortType.NAME -> currentList.sortedBy { it.name }
-            SortType.NORTH_SOUTH -> currentList.sortedByDescending { it.latitude }
-            SortType.EAST_WEST -> currentList.sortedByDescending { it.longitude }
-        }
-
-        _uiState.update { it.copy(filteredMonuments = currentList) }
+    fun toggleFavorite(id: Int) {
+        repository.toggleFavorite(id)
     }
 }
