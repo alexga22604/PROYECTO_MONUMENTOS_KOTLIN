@@ -10,12 +10,15 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.monumentos_practica6.ui.launcher.screen.LauncherScreen
-import com.example.monumentos_practica6.ui.monuments.screen.MonumentsScreen
+import com.example.monumentos_practica6.ui.monument.screen.MonumentScreen
+import com.example.monumentos_practica6.ui.monument.viewmodel.MonumentViewModel
 
 @Composable
 fun AppNavigation(
     paddingValues: PaddingValues,
-    backStack: NavBackStack<NavKey>
+    backStack: NavBackStack<NavKey>,
+    viewModel: MonumentViewModel,
+    onOpenDrawer: () -> Unit
 ) {
     BackHandler(enabled = backStack.size > 1) {
         backStack.removeLastOrNull()
@@ -36,7 +39,21 @@ fun AppNavigation(
             }
 
             entry<ScreenNav.Monuments> { _ ->
-                MonumentsScreen()
+                MonumentScreen(
+                    viewModel = viewModel,
+                    paddingValues = PaddingValues(),
+                    onMenuClick = onOpenDrawer,
+                    onNavigateToDetail = { },
+                    onNavigateToMap = { }
+                )
+            }
+
+            entry<ScreenNav.Map> { _ ->
+            }
+            entry<ScreenNav.Favorites> { _ ->
+            }
+
+            entry<ScreenNav.MyMonuments> { _ ->
             }
         }
     )
