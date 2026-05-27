@@ -5,13 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.monumentos_practica6.data.domain.model.MonumentBo
 import com.example.monumentos_practica6.data.local.MyMonumentPreferences
 import com.example.monumentos_practica6.data.repository.MonumentRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MonumentViewModel(
+private const val EMPTY_STRING = ""
+
+@HiltViewModel
+class MonumentViewModel @Inject constructor(
     private val repository: MonumentRepository,
     private val preferences: MyMonumentPreferences
 ) : ViewModel() {
@@ -98,7 +103,7 @@ class MonumentViewModel(
             latitude = latitude,
             longitude = longitude,
             images = images,
-            wikiUrl = "",
+            wikiUrl = EMPTY_STRING,
             creationDate = System.currentTimeMillis(),
             isFavorite = false
         )

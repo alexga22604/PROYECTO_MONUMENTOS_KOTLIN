@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28"
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -42,6 +43,11 @@ android {
 }
 
 dependencies {
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation(libs.androidx.material3)
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
 
@@ -64,16 +70,12 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.coil.compose)
 
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.ui)
     testImplementation(libs.junit)

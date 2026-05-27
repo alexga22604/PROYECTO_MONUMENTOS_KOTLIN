@@ -51,6 +51,12 @@
     <string name="monument_images_label">Images</string>
     <string name="monument_country_label">Country</string>
     <string name="monument_address_label">Address</string>
+    <string name="map">Map</string>
+    <string name="menu">Menu</string>
+    <string name="list">List</string>
+    <string name="back">Back</string>
+    <string name="favorite">Favorite</string>
+    <string name="wikipedia">Wikipedia</string>
     <string name="save">SAVE</string>
     <string name="monument_added_successfully">Monument added successfully</string>
     <string name="image_source_title">Select Image</string>

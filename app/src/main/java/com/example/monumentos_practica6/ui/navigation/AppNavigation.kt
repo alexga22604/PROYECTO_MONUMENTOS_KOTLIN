@@ -4,14 +4,14 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.example.monumentos_practica6.data.repository.MonumentRepository
 import com.example.monumentos_practica6.ui.launcher.screen.LauncherScreen
 import com.example.monumentos_practica6.ui.monument.screen.MonumentScreen
 import com.example.monumentos_practica6.ui.monument.viewmodel.MonumentViewModel
@@ -19,12 +19,10 @@ import com.example.monumentos_practica6.ui.monument_add.screen.MonumentAddScreen
 import com.example.monumentos_practica6.ui.monument_add.viewmodel.MonumentAddViewModel
 import com.example.monumentos_practica6.ui.monument_detail.screen.MonumentDetailScreen
 import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModel
-import com.example.monumentos_practica6.ui.monument_detail.viewmodel.MonumentDetailViewModelFactory
 import com.example.monumentos_practica6.ui.monument_map.screen.MonumentMapScreen
 import com.example.monumentos_practica6.ui.my_monument.screen.MonumentDetailCustomScreen
 import com.example.monumentos_practica6.ui.my_monument.screen.MyMonumentScreen
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+
 private const val EMPTY_STRING = ""
 
 @Composable
@@ -46,8 +44,9 @@ fun AppNavigation(
             entry<ScreenNav.Launcher> { _ ->
                 LauncherScreen(
                     onTimeout = {
-                        backStack.clear()
+                        val oldScreens = backStack.toList()
                         backStack.add(ScreenNav.Monuments)
+                        oldScreens.forEach { backStack.remove(it) }
                     }
                 )
             }
@@ -80,12 +79,8 @@ fun AppNavigation(
                         }
                     )
                 } else {
-                    val repository = remember { MonumentRepository() }
-                    val factory = remember { MonumentDetailViewModelFactory(repository, screen.id) }
-                    val detailViewModel: MonumentDetailViewModel = viewModel(
-                        key = screen.id.toString(),
-                        factory = factory
-                    )
+                    val detailViewModel: MonumentDetailViewModel = hiltViewModel(key = screen.id.toString())
+                    detailViewModel.loadMonument(screen.id)
 
                     MonumentDetailScreen(
                         viewModel = detailViewModel,
@@ -112,7 +107,7 @@ fun AppNavigation(
             }
 
             entry<ScreenNav.MonumentAdd> { screen ->
-                val addViewModel: MonumentAddViewModel = viewModel()
+                val addViewModel: MonumentAddViewModel = hiltViewModel()
 
                 MonumentAddScreen(
                     latitude = screen.latitude,
