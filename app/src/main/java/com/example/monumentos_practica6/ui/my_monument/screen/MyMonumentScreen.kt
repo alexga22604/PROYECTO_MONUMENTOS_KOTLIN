@@ -48,7 +48,12 @@ fun MyMonumentScreen(
 
     Scaffold(
         modifier = Modifier.padding(paddingValues),
-        topBar = { MonumentMapTopBar(onMenuClick = onMenuClick) },
+        topBar = {
+            MonumentMapTopBar(
+                onMenuClick = onMenuClick,
+                title = stringResource(id = R.string.my_monuments_title)
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onNavigateToAdd(0.0, 0.0) },

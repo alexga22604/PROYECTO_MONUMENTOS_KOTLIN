@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -204,14 +205,16 @@ fun MonumentDetailScreen(
                             Icon(
                                 imageVector = Icons.Outlined.Info,
                                 contentDescription = stringResource(R.string.info_description),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = Color.Blue,
+                                modifier = Modifier.size(28.dp)
                             )
                         }
                         IconButton(onClick = { viewModel.toggleFavorite() }) {
                             Icon(
                                 imageVector = if (monument.isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder,
                                 contentDescription = stringResource(R.string.favorite_toggle_description),
-                                tint = Color(0xFFFFC107)
+                                tint = Color(0xFFFFC107),
+                                modifier = Modifier.size(40.dp)
                             )
                         }
                     }

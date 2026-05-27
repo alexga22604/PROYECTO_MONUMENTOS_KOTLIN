@@ -17,10 +17,11 @@ import com.example.monumentos_practica6.ui.theme.TopBarContentColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MonumentMapTopBar(
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    title: String = stringResource(id = R.string.monuments_title)
 ) {
     TopAppBar(
-        title = { Text(text = stringResource(id = R.string.monuments_title)) },
+        title = { Text(text = title)  },
         navigationIcon = {
             IconButton(onClick = onMenuClick) {
                 Icon(
