@@ -1,5 +1,6 @@
 package com.example.monumentos_practica6.ui.common
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,9 +44,14 @@ fun AppScaffold(
         scope.launch { drawerState.close() }
     }
 
+    BackHandler(enabled = drawerState.isOpen) {
+        closeDrawer()
+    }
+
     if (showNavigationElements) {
         ModalNavigationDrawer(
             drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
             drawerContent = {
                 ModalDrawerSheet(
                     drawerContainerColor = DrawerBackground,

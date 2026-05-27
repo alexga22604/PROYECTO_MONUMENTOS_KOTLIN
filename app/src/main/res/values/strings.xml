@@ -39,4 +39,9 @@
     <string name="mailto_scheme">mailto:</string>
     <string name="geo_uri_format">geo:%1$s,%2$s?q=%1$s,%2$s(%3$s)</string>
     <string name="static_map_url_format">https://static-maps.yandex.ru/1.x/?ll=%1$s,%2$s&amp;size=450,250&amp;z=15&amp;l=map&amp;pt=%1$s,%2$s,pm2rdm</string>
+    <string name="action_list_view">List View</string>
+    <string name="action_my_location">My Location</string>
+    <string name="search_detail_description">Search Detail</string>
+    <string name="add_monument_title">Add Monument</string>
+    <string name="coordinates_format">Lat: %1$s, Lng: %2$s</string>
 </resources>
