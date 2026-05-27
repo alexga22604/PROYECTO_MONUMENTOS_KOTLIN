@@ -18,6 +18,9 @@ sealed class ScreenNav : NavKey {
     data object Map : ScreenNav()
 
     @Serializable
+    data class MonumentAdd(val longitude: Double, val latitude: Double) : ScreenNav()
+
+    @Serializable
     data object Favorites : ScreenNav()
 
     @Serializable
