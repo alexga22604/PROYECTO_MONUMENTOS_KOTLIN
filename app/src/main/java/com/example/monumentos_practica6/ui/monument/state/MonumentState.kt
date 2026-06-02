@@ -9,7 +9,9 @@ enum class SortType {
 data class MonumentState(
     val monuments: List<MonumentBo> = emptyList(),
     val filteredMonuments: List<MonumentBo> = emptyList(),
+    val myMonuments: List<MonumentBo> = emptyList(),
     val sortType: SortType = SortType.DATE,
     val selectedCountry: String? = null,
-    val availableCountries: List<String> = emptyList()
+    val availableCountries: List<String> = emptyList(),
+    val newlyAddedMonumentId: Int? = null
 )

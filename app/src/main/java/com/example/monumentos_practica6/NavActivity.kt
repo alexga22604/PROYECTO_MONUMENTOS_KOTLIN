@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.monumentos_practica6.ui.MonumentApp
 import com.example.monumentos_practica6.ui.theme.Monumentospractica6Theme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NavActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

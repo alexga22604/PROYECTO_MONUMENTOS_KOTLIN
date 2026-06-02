@@ -81,7 +81,6 @@ fun AppScaffold(
                         )
                     }
 
-
                     DrawerItem(
                         label = stringResource(id = R.string.monuments_title),
                         selected = currentRoute is ScreenNav.Monuments

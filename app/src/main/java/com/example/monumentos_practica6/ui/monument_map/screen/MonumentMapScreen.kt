@@ -45,6 +45,7 @@ import com.example.monumentos_practica6.ui.theme.MapFabWhite
 import com.example.monumentos_practica6.ui.theme.MapInfoWindowBackground
 import com.example.monumentos_practica6.ui.theme.MapInfoWindowContent
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -77,10 +78,14 @@ fun MonumentMapScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    LaunchedEffect(isMapLoaded, state.monuments) {
-        if (isMapLoaded && state.monuments.isNotEmpty()) {
+    val allMonuments = remember(state.filteredMonuments, state.myMonuments) {
+        state.filteredMonuments + state.myMonuments
+    }
+
+    LaunchedEffect(isMapLoaded, allMonuments) {
+        if (isMapLoaded && allMonuments.isNotEmpty()) {
             val builder = LatLngBounds.builder()
-            state.monuments.forEach { builder.include(LatLng(it.latitude, it.longitude)) }
+            allMonuments.forEach { builder.include(LatLng(it.latitude, it.longitude)) }
             cameraPositionState.animate(
                 CameraUpdateFactory.newLatLngBounds(
                     builder.build(),
@@ -100,9 +105,9 @@ fun MonumentMapScreen(
                 FloatingActionButton(
                     onClick = {
                         if (isCenteredOnMe) {
-                            if (state.monuments.isNotEmpty()) {
+                            if (allMonuments.isNotEmpty()) {
                                 val builder = LatLngBounds.builder()
-                                state.monuments.forEach {
+                                allMonuments.forEach {
                                     builder.include(
                                         LatLng(
                                             it.latitude,
@@ -166,7 +171,7 @@ fun MonumentMapScreen(
                 onMapClick = { selectedMonument = null },
                 onMapLongClick = { latLng -> onNavigateToAdd(latLng.latitude, latLng.longitude) }
             ) {
-                state.monuments.forEach { monument ->
+                allMonuments.forEach { monument ->
                     val markerState = rememberMarkerState(
                         key = monument.id.toString(),
                         position = LatLng(monument.latitude, monument.longitude)
