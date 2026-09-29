@@ -1,0 +1,1 @@
+Aplicación nativa para Android desarrollada en Kotlin orientada a la exploración y gestión de información sobre monumentos y puntos de interés. El proyecto demuestra la implementación de un desarrollo móvil moderno, enfocado en una arquitectura escalable y una experiencia de usuario fluida y reactiva.
